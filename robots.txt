@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://surelyMersad.github.io/blog/sitemap.xml
