@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>generative drug design - Mersad Abbasi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial,
+                sans-serif;
+            min-height: 100vh;
+            padding: 3rem 2rem;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            text-transform: lowercase;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        .content {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+
+        .content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .citation-link {
+            color: #ffffff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            font-weight: 400;
+        }
+
+        .citation-link:hover {
+            opacity: 1;
+        }
+
+        .references {
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .references h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            text-transform: lowercase;
+        }
+
+        .reference {
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .reference:last-child {
+            margin-bottom: 0;
+        }
+
+        .reference-number {
+            position: absolute;
+            left: 0;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .reference-title {
+            font-weight: 400;
+            margin-bottom: 0.3rem;
+        }
+
+        .reference-url {
+            color: #ffffff;
+            text-decoration: none;
+            opacity: 0.6;
+            font-size: 0.9rem;
+            word-break: break-all;
+            transition: opacity 0.3s ease;
+        }
+
+        .reference-url:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                font-size: 0.95rem;
+            }
+
+            .references h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← back</a>
+        <h1>generative drug design</h1>
+        <div class="date">Jan 19</div>
+        <div class="content">
+            <p>
+                Generative Drug Design — specifically one-shot or few-shot molecular design
+            </p>
+            <p>
+                Historically, drug discovery has been a search-and-verify process. Once a target
+                protein, gene, or pathway is identified as causally affecting a disease, large
+                chemical or biological libraries are screened to identify weak hits. These hits are
+                then refined through iterative cycles of synthesis and testing. Roughly one-third of
+                the drug discovery pipeline is consumed by this search phase, yet only about 1 in 250
+                candidates ultimately survive to human trials <a href="#ref1" class="citation-link">[1]</a>.
+            </p>
+            <p>
+                This workflow exists because de novo molecular design is a needle-in-a-haystack
+                problem. Until recently, we either searched blindly through vast libraries or relied
+                on mechanistic models that explicitly encode biophysical constraints. Foundational
+                models for molecules change this paradigm. Trained on hundreds of millions to
+                billions of biological sequences and related data, these models implicitly learn the
+                constraints imposed by evolution and provide rich representations that can be
+                leveraged for downstream molecular design.
+            </p>
+            <p>
+                Biological foundation models are increasingly multimodal. By jointly modeling
+                sequence, structure, function, and experiment-specific annotations, they can reason
+                across modalities <a href="#ref2" class="citation-link">[2]</a>. This is especially
+                important in domains like protein design, where task-specific labeled data is
+                extremely scarce.
+            </p>
+            <p>
+                Industry is already operationalizing this direction. Chai-2 reports fully de novo
+                antibody design with an experimental hit rate of approximately 15–16% in a zero-shot
+                setting, validated across dozens of targets <a href="#ref3" class="citation-link">[3]</a>.
+                For perspective, the prior state of the art (circa 2024) achieved hit rates roughly
+                two orders of magnitude lower <a href="#ref4" class="citation-link">[4]</a>. One week
+                after announcing Chai-2, Eli Lilly announced a collaboration with Chai Discovery,
+                under which Chai will build custom foundation models trained on Lilly’s proprietary
+                data <a href="#ref5" class="citation-link">[5]</a>. This pattern is likely to
+                accelerate through 2026.
+            </p>
+            <p>
+                The next AlphaFold-scale inflection point in biochemistry is approaching. Protein
+                structure prediction became a compelling machine-learning problem because it had (1)
+                a well-defined objective—atomic coordinates as ground truth—and (2) a clear,
+                standardized evaluation framework via CASP. Protein fitness prediction, which aims
+                to predict the effects of combinations of mutations, is increasingly following the
+                same recipe. Benchmarks such as ProteinGym provide large, standardized datasets
+                with millions of experimental measurements <a href="#ref6" class="citation-link">[6]</a>.
+                Current state-of-the-art models achieve roughly 0.52 zero-shot correlation on these
+                benchmarks <a href="#ref6" class="citation-link">[6]</a>. AlphaFold enabled the
+                transition from sequence to structure; understanding mutation effects moves us from
+                structure to function. While fitness is inherently context-dependent, this represents
+                the final missing component for precise, directed de novo protein design.
+            </p>
+            <p>
+                Drug design is fundamentally changing. Decades of wet-lab experiments and
+                computational simulations generated during historical screening campaigns largely sit
+                unused within large pharmaceutical companies. Tailored foundation models can unlock
+                this data and compress the discovery phase from years to weeks. Startups building
+                foundation-model-driven molecular design platforms are particularly well positioned,
+                as they can leverage niche, high-value proprietary datasets.
+            </p>
+            <p>
+                In the discovery phase of drug design, wet-lab experimentation is expensive. One can
+                bet on robotics to make this process cheaper and faster <a href="#ref7" class="citation-link">[7]</a>.
+                Alternatively, one can bet on platforms that directly design molecules rather than
+                search through libraries. Platforms are winning today, and we are close to a major
+                breakthrough in protein fitness prediction <a href="#ref8" class="citation-link">[8]</a>
+                that will make this approach even more dominant.
+            </p>
+        </div>
+
+        <div class="references">
+            <h2>References</h2>
+            <div class="reference" id="ref1">
+                <span class="reference-number">[1]</span>
+                <div class="reference-title">Intuition Labs — Drug Development Timeline Explained</div>
+                <a href="https://intuitionlabs.ai/articles/drug-development-timeline-explained" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://intuitionlabs.ai/articles/drug-development-timeline-explained
+                </a>
+            </div>
+            <div class="reference" id="ref2">
+                <span class="reference-number">[2]</span>
+                <div class="reference-title">EvolutionaryScale — ESM-3 Release</div>
+                <a href="https://www.evolutionaryscale.ai/blog/esm3-release" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://www.evolutionaryscale.ai/blog/esm3-release
+                </a>
+            </div>
+            <div class="reference" id="ref3">
+                <span class="reference-number">[3]</span>
+                <div class="reference-title">Chai Discovery — De novo antibody design with Chai-2</div>
+                <a href="https://www.biorxiv.org/content/10.1101/2025.07.05.663018v1.full.pdf" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://www.biorxiv.org/content/10.1101/2025.07.05.663018v1.full.pdf
+                </a>
+            </div>
+            <div class="reference" id="ref4">
+                <span class="reference-number">[4]</span>
+                <div class="reference-title">Prior antibody design benchmarks (2024)</div>
+                <a href="https://www.biorxiv.org/content/10.1101/2024.03.14.585103v1.full.pdf" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://www.biorxiv.org/content/10.1101/2024.03.14.585103v1.full.pdf
+                </a>
+            </div>
+            <div class="reference" id="ref5">
+                <span class="reference-number">[5]</span>
+                <div class="reference-title">TechCrunch — From OpenAI's offices to a deal with Eli Lilly: How Chai Discovery became one of the flashiest names in AI drug development</div>
+                <a href="https://techcrunch.com/2026/01/16/from-openais-offices-to-a-deal-with-eli-lilly-how-chai-discovery-became-one-of-the-flashiest-names-in-ai-drug-development/" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://techcrunch.com/2026/01/16/from-openais-offices-to-a-deal-with-eli-lilly-how-chai-discovery-became-one-of-the-flashiest-names-in-ai-drug-development/
+                </a>
+            </div>
+            <div class="reference" id="ref6">
+                <span class="reference-number">[6]</span>
+                <div class="reference-title">ProteinGym — Benchmarks</div>
+                <a href="https://proteingym.org/benchmarks" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://proteingym.org/benchmarks
+                </a>
+            </div>
+            <div class="reference" id="ref7">
+                <span class="reference-number">[7]</span>
+                <div class="reference-title">Robot on Rails — Measuring AI's capability to accelerate biological research in the wet lab</div>
+                <a href="https://robotonrails.com/measuring-ais-capability-to-accelerate-biological-research-in-the-wet-lab/" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://robotonrails.com/measuring-ais-capability-to-accelerate-biological-research-in-the-wet-lab/
+                </a>
+            </div>
+            <div class="reference" id="ref8">
+                <span class="reference-number">[8]</span>
+                <div class="reference-title">Pascal Notin — Next-generation protein modeling</div>
+                <a href="https://open.substack.com/pub/pascalnotin/p/next-generation-protein-modeling" class="reference-url" target="_blank" rel="noopener noreferrer">
+                    https://open.substack.com/pub/pascalnotin/p/next-generation-protein-modeling
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
