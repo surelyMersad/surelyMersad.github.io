@@ -58,6 +58,7 @@
             transition: opacity 0.3s ease;
             display: inline-block;
             position: relative;
+            margin-bottom: 1rem;
         }
 
         .writings-link:hover {
@@ -183,15 +184,16 @@
             gap: 1.5rem;
             margin-top: 3rem;
             opacity: 0;
-            animation: fadeIn 1s ease-in 0.9s forwards;
+            animation: fadeIn 1s ease-in 1.1s forwards;
         }
 
         .social-link {
             display: inline-block;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             opacity: 0.7;
             transition: opacity 0.3s ease;
+            color: #ffffff;
         }
 
         .social-link:hover {
@@ -201,7 +203,8 @@
         .social-link svg {
             width: 100%;
             height: 100%;
-            fill: #ffffff;
+            fill: currentColor;
+            display: block;
         }
 
         @keyframes fadeIn {
@@ -234,7 +237,10 @@
     <div class="container">
         <h1>Mersad Abbasi</h1>
         <div class="email">mersad [at] berkeley [dot] edu</div>
-        <div class="writings-link" id="writingsLink">writings</div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <div class="writings-link" id="writingsLink">writings</div>
+            <div class="writings-link" id="projectsLink" style="animation-delay: 0.8s;">projects</div>
+        </div>
         <div class="social-links">
             <a href="https://github.com/surelyMersad" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -259,15 +265,33 @@
         </div>
     </div>
 
+    <div class="writings-overlay" id="projectsOverlay">
+        <button class="close-button" id="closeProjectsButton">×</button>
+        <div class="writings-content">
+            <h2>Projects</h2>
+            <ul class="writings-list" id="projectsList">
+            </ul>
+        </div>
+    </div>
+
     <script>
         const writingsLink = document.getElementById('writingsLink');
         const writingsOverlay = document.getElementById('writingsOverlay');
         const closeButton = document.getElementById('closeButton');
         const writingsList = document.getElementById('writingsList');
 
+        const projectsLink = document.getElementById('projectsLink');
+        const projectsOverlay = document.getElementById('projectsOverlay');
+        const closeProjectsButton = document.getElementById('closeProjectsButton');
+        const projectsList = document.getElementById('projectsList');
+
         const writings = [
             { title: 'generative drug design', date: 'Jan 19', url: 'generative-drug-design.html' },
             { title: 'risk', date: 'Dec 19', url: 'risk.html' },
+        ];
+
+        const projects = [
+            { title: 'hill climbing protein fitness prediction', url: 'hill-climbing-protein-fitness-prediction.html' },
         ];
 
         function renderWritings() {
@@ -281,6 +305,21 @@
                     <a href="${writing.url}" class="writing-item" target="_blank" rel="noopener noreferrer">
                         <div class="writing-title">${writing.title}</div>
                         <div class="writing-date">${writing.date}</div>
+                    </a>
+                </li>
+            `).join('');
+        }
+
+        function renderProjects() {
+            if (projects.length === 0) {
+                projectsList.innerHTML = '<li class="empty-state">No projects yet. Check back soon.</li>';
+                return;
+            }
+
+            projectsList.innerHTML = projects.map(project => `
+                <li>
+                    <a href="${project.url}" class="writing-item" target="_blank" rel="noopener noreferrer">
+                        <div class="writing-title">${project.title}</div>
                     </a>
                 </li>
             `).join('');
@@ -303,16 +342,40 @@
             }
         });
 
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && writingsOverlay.classList.contains('active')) {
-                writingsOverlay.classList.remove('active');
+        projectsLink.addEventListener('click', () => {
+            projectsOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeProjectsButton.addEventListener('click', () => {
+            projectsOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        projectsOverlay.addEventListener('click', (e) => {
+            if (e.target === projectsOverlay) {
+                projectsOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             }
         });
 
-        // Initialize writings
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (writingsOverlay.classList.contains('active')) {
+                    writingsOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+                if (projectsOverlay.classList.contains('active')) {
+                    projectsOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+
+        // Initialize
         renderWritings();
+        renderProjects();
     </script>
 </body>
 </html>
