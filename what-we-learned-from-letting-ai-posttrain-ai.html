@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>what we learned from letting ai posttrain ai - Mersad Abbasi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            min-height: 100vh;
+            padding: 3rem 2rem;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 3rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            text-transform: lowercase;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        .content {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.01em;
+        }
+
+        .content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .content h2 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+            text-transform: lowercase;
+        }
+
+        .content h3 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            text-transform: lowercase;
+            opacity: 0.9;
+        }
+
+        .content a {
+            color: #ffffff;
+            text-decoration: underline;
+            text-decoration-color: rgba(255, 255, 255, 0.4);
+            text-underline-offset: 3px;
+            transition: text-decoration-color 0.3s ease;
+        }
+
+        .content a:hover {
+            text-decoration-color: rgba(255, 255, 255, 1);
+        }
+
+        .content ul, .content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .content li {
+            margin-bottom: 0.75rem;
+        }
+
+        .content blockquote {
+            border-left: 2px solid rgba(255, 255, 255, 0.25);
+            padding-left: 1.25rem;
+            margin: 1.5rem 0;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .content code {
+            font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+            font-size: 0.88em;
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 0.1em 0.35em;
+            border-radius: 3px;
+        }
+
+        .content pre {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 1rem 1.25rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .content pre code {
+            background: none;
+            padding: 0;
+            border-radius: 0;
+            font-size: inherit;
+        }
+
+        .content em {
+            font-style: italic;
+        }
+
+        .content strong {
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                font-size: 0.95rem;
+            }
+
+            .content h2 {
+                font-size: 1.2rem;
+            }
+
+            .content h3 {
+                font-size: 1.05rem;
+            }
+
+            .content pre {
+                font-size: 0.78rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← back</a>
+        <h1>what we learned from letting ai posttrain ai</h1>
+        <div class="date">Apr 22</div>
+        <div class="content">
+            <p>
+                We believe the future of AI is letting every person and organization shape their own models: how they behave, what they value, how they get better the more they're used. We call this <strong><em>modelcrafting</em></strong>. Doing it well is hard, and most people shouldn't have to do it. But this is exactly what AI agents are for. They'll need to train other AIs and do the hard part themselves: deciding what to improve, how to measure it, and which experiments are worth running.
+            </p>
+            <p>
+                To see if agents can pull this off, we needed a task that was easy to grade but hard enough to reveal real research judgment. Our first attempt is the <strong>Frog Placement Game</strong>, a task we built for Proximal's <a href="https://www.frontierswe.com/frogsgame-rl" target="_blank" rel="noopener noreferrer">FrontierSWE</a>.
+            </p>
+            <p>
+                <em>Given the same base model, training API, and time budget a human researcher would have, can a frontier agent run the modelcrafting loop end to end?</em>
+            </p>
+            <p>
+                Agents make reasonable calls about what to try, and sometimes they recover when things go sideways. But they also fail in predictable ways. They submit before they're done. Under tight time budgets they skip training entirely. They default to the common training methods, without understanding the nuances of the task ahead. And occasionally they try to cheat in ways more creative than their real solutions. They lack the taste for experimentation. There's a real gap between writing a training loop and running a research loop, and this task was built to measure it.
+            </p>
+
+            <h2>about the task</h2>
+            <p>
+                FrogsGame is fairly simple: place N frogs on an N×N grid such that no two share a row, column, diagonal, or color region. This is an automatically verifiable task that can be solved with a backtracking algorithm in milliseconds. Frontier models with strong reasoning can often solve it directly too. But solving a puzzle and teaching another model to solve it are very different things.
+            </p>
+            <p>
+                The frontier agent — Claude 4.6 Opus or GPT-5.4 — is given Qwen3-8B and either 8 or 20 hours to build a full training pipeline that teaches another AI model to solve it. That means generating training data from scratch, defining reward signals, running training on remote GPUs through the Tinker API, evaluating whether the model improved, and iterating on its approach, all without human supervision.
+            </p>
+            <p>
+                The resulting model is evaluated on 500 unseen boards spanning four difficulty tiers: easy (N=6,7), medium (N=8,9), hard (N=10,11), and expert (N=12,13). The final score is simple: what percentage of boards does the trained model solve?
+            </p>
+            <p>
+                One note on format. FrontierSWE ships with the multi-turn version of this task, where the trained model solves boards through iterative tool calls. Almost every agent we tested failed it. The failures split two ways: either the fine-tuned model never learned the iterative tool-calling format in time, or it learned the format but could not reason about the boards. To isolate reasoning from tool-calling format, we built a single-turn variant where the model outputs the full placement as a JSON object in one shot.
+            </p>
+
+            <h2>is the task even solvable?</h2>
+            <p>
+                Before committing to the main experiments we ran two sanity checks.
+            </p>
+            <ol>
+                <li><strong>Is there a learning signal for RL to work with?</strong> The pass@k results indicate that the base model provides a clear learning signal for optimization using GRPO.</li>
+                <li><strong>What is the actual ceiling on the puzzle itself?</strong> Frontier models solve boards cleanly across all four tiers, so the problem sits well within reach of a capable reasoner.</li>
+            </ol>
+            <p>
+                Both checks cleared. Any failure from here sits with the agent's pipeline, not the task itself. Which raises the next question: what does the agent actually have to work with?
+            </p>
+
+            <h2>environment design</h2>
+            <p>
+                The agent runs inside a sandboxed environment with deliberately constrained access. The network allows only one external endpoint: the Tinker API, for remote training and inference, with no local GPUs available. This forces the agent to use Tinker for all compute rather than falling back to local training, and it rules out downloading pretrained weights or external libraries mid-run.
+            </p>
+            <p>
+                We use the Harbor framework for running the agents. At the start of each run, the agent receives three things: <code>instructions.md</code> describing the task and objective, <code>prepare.py</code> which implements the game engine, board validation, and eval harness, and the full Tinker API documentation. The agent is explicitly told not to modify <code>prepare.py</code>, and we hash it to enforce this. Everything else — training data generation, reward design, training loops, evaluation logic — is the agent's responsibility, written in <code>train.py</code>.
+            </p>
+            <p>
+                For boards, we use backtracking to generate all valid configurations. The agent has no access to the held-out test set and must generate its own training and evaluation boards from scratch. The verifier runs against a fixed set of 500 boards the agent has never seen.
+            </p>
+            <p>
+                We take a few anti-cheat measures. When the agent finishes, it produces two artifacts: <code>path.txt</code> pointing to its best checkpoint, and <code>results.json</code> with its self-reported score. The verifier then independently loads the saved checkpoint, runs it against the held-out boards, and checks both the hash of <code>prepare.py</code> and that the checkpoint was saved from the correct base model. This ensures that we evaluate against the checkpoint the agent produced.
+            </p>
+            <p>
+                We kept the instructions to the agent deliberately broad and general. The point was not to hand-hold agents through a known-good recipe but to watch where frontier models actually fail when given open-ended latitude. We found some surprising results.
+            </p>
+
+            <h2>agents make the same set of mistakes</h2>
+            <p>
+                Post-training is a game of small decisions, and the single-turn results make that clear. Only 4 out of 20 agents reach &gt;25% pass@4; the rest hover near zero. We wanted to understand whether this gap came from raw capability or from missing context. So we introduced a "hinted" setting: a playbook that surfaces the most common failure modes from earlier runs, each paired with a concrete fix. The training setup stays identical; only the agent's starting context changes.
+            </p>
+            <p>
+                The playbook focuses on three recurring issues:
+            </p>
+            <ul>
+                <li><strong>Over-reliance on naive SFT.</strong> Agents often begin with supervised fine-tuning on a weak base model, which leads to overfitting on output format rather than actual task performance. In the hinted runs, we constrain SFT to minimal corrective steps only when outputs are not parsable, and otherwise prioritize reinforcement learning.</li>
+                <li><strong>Early termination and underuse of compute.</strong> Codex agents especially tend to give up early and underutilize their compute budget. We counter this with a system prompt that reinforces persistence, encouraging continued iteration until less than 30 minutes remain in the budget.</li>
+                <li><strong>Invalid or non-parsable outputs.</strong> Many runs fail simply because outputs don't match the expected format. We address this by enforcing a strict output schema and providing clear examples to anchor the format from the start.</li>
+            </ul>
+            <p>
+                The playbook successfully removes many of the obvious failure modes. GPT-5.4 improves (pass@4: 2.06% → 10%), and variance drops by roughly 2×, indicating more stable behavior across runs.
+            </p>
+            <p>
+                But overall performance remains limited. Instead of failing early, agents begin to fail differently. The most common issue is optimizing against partial or misaligned reward functions, which decouples training signals from actual solve rates. This leads to inflated internal evaluations and unwarranted confidence, without corresponding gains in true task performance.
+            </p>
+
+            <h2>sophisticated methods, amateur mistakes</h2>
+            <p>
+                Across trials, agents tried creative approaches and often executed them well: iterative reward sharpening from previous checkpoints (trial 17, single-turn), intermediate representation supervision (trial 18, single-turn), iterative LoRA rank scaling (trial 5, single-turn), and the standard SFT-then-RL recipe for format following.
+            </p>
+            <p>
+                In spite of their creativity, none of the hinted runs showed improvement over the base model. Only 4 of 20 singleturn runs improved puzzle-solving performance at all, and the gains were marginal (+4.8% pass@4 in the best case). What went wrong?
+            </p>
+            <p>
+                Agents miss the research practices that feel obvious to experienced researchers. Call it intuition, call it common sense. The recurring failures are generating SFT data from a weak base model, skipping basic sanity checks on the training pipeline, and evaluating on the training distribution without noticing. Some examples below.
+            </p>
+            <p>
+                <strong>1. No sanity checks on model outputs.</strong> Across trials that suffered SFT format contamination, not a single agent ran one sample from their saved checkpoint and printed the raw output. This is the most basic sanity check imaginable:
+            </p>
+            <pre><code>text = tokenizer.decode(result.sequences[0].tokens)
+print(repr(text[:500]))</code></pre>
+            <p>
+                Instead, agents evaluated with <code>parse_solution(text)</code>, which uses a regex that searches for <code>{"frogs": ...}</code> anywhere in the output, so even a model that outputs coherent narrative with the answer buried inside would pass. Agents saw high eval numbers and concluded training worked.
+            </p>
+            <p>
+                <strong>2. No curriculum, no data strategy.</strong> Boards range from N=6 (trivial) to N=13 (expert). The correct prior is to train on small boards first, verify the model learns the constraint structure, then progressively increase difficulty. Most of the runs didn't implement this curriculum learning strategy. Most generated either tiny datasets (trial 4: 10 boards; trial 15: 6 boards) or large uniform-random ones. The good news is that trials 4 and 11 learned from their mistakes post hoc and implemented the curriculum.
+            </p>
+            <p>
+                <strong>3. Evaluating on the training distribution without realizing it.</strong> All of the runs evaluated training using the same in-distribution algorithm that was used for generating the training dataset. Trial 13 is the clearest example: 100% internal eval but 0/500 on held-out boards. The internal eval generated 40 boards using <code>seed=999</code> with the same BFS region-growing algorithm as the training data. The 6000 training boards covered the whole structural space. After 3 epochs of SFT, the model had seen enough structural patterns that it could produce passing outputs on those 40 boards. The agent declared victory and sat idle for 10.4 hours. No agent noticed or acted on this.
+            </p>
+
+            <h3>a little tokenizer detour (feel free to skip)</h3>
+            <p>
+                One failure revealed something subtle about Tinker's API design. We let agents access the tokenizer through Tinker's <code>get_tokenizer()</code> API in both training and inference. But under the hood, this call routes to HuggingFace's <code>AutoTokenizer.from_pretrained()</code>, and HuggingFace was blocked in the sandbox.
+            </p>
+            <p>
+                <code>TrainingClient.get_tokenizer</code> and <code>SamplingClient.get_tokenizer</code> funnel into the same helper <code>_load_tokenizer_from_model_info</code>. That helper:
+            </p>
+            <ol>
+                <li>Makes one Tinker API call to read model metadata (base model name + optional <code>tokenizer_id</code> override).</li>
+                <li>Applies a couple of hard-coded name fixups (<code>sampling_client.py:533-559</code>):
+                    <ul>
+                        <li><code>meta-llama/Llama-3*</code> → redirected to <code>thinkingmachineslabinc/meta-llama-3-instruct-tokenizer</code> (ungated mirror, to skip HF gating).</li>
+                        <li><code>TML/*</code> → server-side-bundled tokenizers (via the <code>tml_tokenizers</code> package that ships only inside Tinker's backend, never in the public wheel).</li>
+                        <li><code>moonshotai/Kimi-K2*</code> → pinned revision + <code>trust_remote_code=True</code>.</li>
+                    </ul>
+                </li>
+                <li>Everything else: <code>AutoTokenizer.from_pretrained(tokenizer_id, fast=True, **kwargs)</code>. i.e., full HuggingFace Hub download, cached in <code>~/.cache/huggingface/hub/</code>.</li>
+            </ol>
+            <p>
+                This left agents with a base model and no tokenizer. They couldn't convert training prompts into token IDs, and therefore couldn't train or evaluate at all. Instead of giving up, most Opus 4.6 agents treated the missing tokenizer as a research problem and spent serious time building one from scratch:
+            </p>
+            <p>
+                <strong>The first approach used byte-level encoding.</strong> It relies on a property of BPE tokenizers: the first 256 token IDs always map to raw bytes (just in a shuffled order). This means any text can still be encoded even without the learned merge rules, it just produces longer sequences. The agent hardcoded the GPT-2 byte-to-token mapping and directly converted text into byte-level token IDs.
+            </p>
+            <pre><code># 8h-run2, train.py L49-57
+BYTE_ORDER = (list(range(0x21, 0x7F)) + list(range(0xA1, 0xAD)) + [0xAE]
+              + list(range(0xAF, 0x100)) + list(range(0x00, 0x21))
+              + list(range(0x7F, 0xA1)) + [0xAD])
+BYTE_TO_TOKEN = {bval: tid for tid, bval in enumerate(BYTE_ORDER)}
+def encode_text(text): return [BYTE_TO_TOKEN[b] for b in text.encode('utf-8')]</code></pre>
+            <p>
+                <strong>The second approach</strong>, empirical BPE discovery via logprobs, used the model as its own oracle for merged token IDs that byte-level encoding couldn't produce. The Harmony role and channel names had to appear as proper BPE tokens after <code>&lt;|start|&gt;</code> and <code>&lt;|channel|&gt;</code>.
+            </p>
+            <p>
+                Harmony is OpenAI's chat template for gpt-oss models — the structured format that wraps conversation turns in special delimiter tokens like <code>&lt;|start|&gt;</code>, <code>&lt;|message|&gt;</code>, <code>&lt;|end|&gt;</code>, and <code>&lt;|channel|&gt;</code>. Within an assistant turn, the model emits output on one of two channels: analysis (private chain-of-thought reasoning) or final (the user-visible answer). The role names (user, developer, assistant) and channel names (analysis, final) are ordinary words that get BPE-encoded into specific merged token IDs.
+            </p>
+            <p>
+                The agent fed in a partial prompt, inspected <code>topk_prompt_logprobs</code>, and read the token IDs straight off the model's predictions:
+            </p>
+            <blockquote>
+                "Excellent progress! Token 1428 is very likely developer (perfect assistant logprob in conversation context)." (step 268)
+            </blockquote>
+            <blockquote>
+                "Token 173781 has logprob −0.0135 after the 2nd START — almost certainly user." (step 394)
+            </blockquote>
+            <p>
+                The pivot came when the agent sampled from the model with byte-level prompts and noticed integer pairs in the raw token stream:
+            </p>
+            <blockquote>
+                "The model IS solving the puzzle — I can see coordinate pairs 3, 1, 4, 2, etc. in the output. The key insight: digit tokens are byte-level, so I can extract coordinates without fully decoding BPE."
+            </blockquote>
+            <p>
+                That insight closed the loop. Because the target output (frog coordinates) used only ASCII digits, commas, and brackets, all single-byte characters with predictable token IDs, the agent could parse model outputs directly from the raw token stream, never needing BPE decoding at all.
+            </p>
+            <pre><code># train.py lines 130-159
+DIGIT_TOKENS  = {BYTE_TO_TOKEN[ord(str(d))]: d for d in range(10)}
+COMMA_TOKEN   = BYTE_TO_TOKEN[ord(',')]
+OPEN_BRACKET  = BYTE_TO_TOKEN[ord('[')]
+CLOSE_BRACKET = BYTE_TO_TOKEN[ord(']')]
+
+def extract_coordinates(tokens, n):
+    coords = []
+    i = 0
+    while i &lt; len(tokens) - 5:
+        if (tokens[i] == OPEN_BRACKET and tokens[i+1] in DIGIT_TOKENS
+            and tokens[i+2] == COMMA_TOKEN and tokens[i+4] in DIGIT_TOKENS
+            and tokens[i+5] == CLOSE_BRACKET):
+            coords.append((DIGIT_TOKENS[tokens[i+1]], DIGIT_TOKENS[tokens[i+4]]))
+            i += 6
+        else:
+            i += 1
+    return coords[-n:] if len(coords) &gt;= n else None</code></pre>
+
+            <h2>agents have no working sense of time</h2>
+            <p>
+                <strong>Agents systematically underestimate training overhead.</strong> They lack deep understanding of conditions impacting training time (like curriculum induced slowdowns due to more output tokens or checkpoint saves) and simply extrapolate the time taken for initial steps of training.
+            </p>
+            <p>
+                Claude and Codex use their budgets differently. Opus 4.6 runs keep working until the clock runs out. Codex runs finish the planned pipeline and stop early. GPT agents treated the timer as an orientation step at the start ("here is my budget") rather than a live tracking mechanism. Only Trials 17 and 19 used the timer value to actually influence a decision.
+            </p>
+            <p>
+                <strong>Agents' poor sense of time affects their performance.</strong> We saw this in multiple trials, and through distinct causal mechanisms. But the effect is more nuanced than "ran out of time." Time mismanagement shaped which technical decisions got made, not just how many training steps fit.
+            </p>
+            <p>
+                In trial 11, because the agent had 20 hours, it invested 250 minutes in SFT warmup, which contaminated the format. The 8-hour versions of the agent (trials 1, 2) had less time and more often skipped SFT entirely.
+            </p>
+            <p>
+                Exploration helped trial 14 find the critical problem with naive SFT. Trial 14 (also 20-hour Claude) explicitly chose pure RL after 400 minutes of exploration that led it to understand the SFT contamination risk. Having spent time understanding the base model's capabilities, the agent decided it didn't need SFT warmup:
+            </p>
+            <blockquote>
+                The base model already achieves a 34–37% correct rate with 100% format compliance. That's a strong starting point. The RL training should push this higher.
+            </blockquote>
+            <p>
+                Trial 11, with less exploration time, committed to SFT early without understanding what it would do to the output format.
+            </p>
+            <p>
+                <strong>Agents rarely recover from catastrophic processes that take a lot of time.</strong> Once committed to a process, agents rarely stop and reflect. One of the successful 20-hour Opus 4.6 runs spent 61% of the time budget in the evaluation phase and only 3.6% on RL training. In this case the exceptional step-1 result triggered intensive monitoring. The agent evaluated every checkpoint exhaustively after seeing the jump, spending the equivalent of ~10 hours watching metrics rather than continuing to train.
+            </p>
+
+            <h2>spending patterns across agents</h2>
+            <p>
+                Agents had an API key and infinite credits to sample or train a base model through Tinker. How they used that compute varied sharply. GPT 5.4 submitted early and barely trained, ending with low spend and low performance to match. Claude Opus used far more of the budget but with high variance: runs at similar price points landed anywhere from near zero to the top of the board, and the best 8-hour run roughly matched the best 20-hour run at a third of the cost. More spending didn't buy a higher ceiling.
+            </p>
+
+            <h2>the missing research intuition</h2>
+            <p>
+                Frontier models can find novel methods, execute cleanly, and pick up new APIs fast. This makes Tinker API an elegant interface for agentic modelcrafting. But across runs, one pattern kept surfacing: agents optimized for good-looking metrics rather than systems that actually worked. They wrote evals and trusted them blindly, declaring success based on numbers their own code produced. Almost none asked the basic questions a practitioner would: what could make this metric wrong? What should we be measuring at this stage?
+            </p>
+            <p>
+                We think intuition resolves into concrete habits: noticing when a result looks off, interrogating a metric before trusting it, running something small before scaling, knowing when to stop a run versus push further. You run hundreds of experiments, most fail, and you sit with the failures long enough to figure out what they were telling you. That loop is a training signal, and it can be given to an agent that runs it often enough to learn from it.
+            </p>
+            <p>
+                The Frog Placement Game is a toy environment, a first probe into whether agents can run the loop at all. What we actually care about is the thesis underneath it: that research intuition is trainable, and that once it is, improving a model becomes something AI should do for anyone, on any task, at all times.
+            </p>
+
+            <h2>acknowledgments</h2>
+            <p>
+                <em>Thanks to Mohammad Hossein Rezaei, Evan Chu, Rajan Agarwal, Justus Mattern, Calvin Chen, Sean Klassen and Karina Nguyen for their co-development and feedback, and to Thinking Machines Lab for support with the Tinker API.</em>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
