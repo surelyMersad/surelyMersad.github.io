@@ -1,7 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mersad Abbasi</title>
+<style>
+.profile {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr);
+  align-items: center;
+  gap: clamp(16px, 4vw, 32px);
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+.profile img { display: block; width: 100%; height: auto; }
+.profile p { margin: 0; text-align: left; font-size: 18px; line-height: 1.6; }
+@media (max-width: 480px) {
+  .profile p { font-size: 16px; }
+}
+</style>
 </head>
 <body bgcolor="#000000" text="#FFFFFF" link="#FFFFFF" vlink="#CCCCCC" alink="#FFFFFF">
 
@@ -13,7 +32,10 @@
 
 <p>mersad [at] berkeley [dot] edu</p>
 
-<br>
+<div class="profile">
+  <img src="E81D3B5F-71E5-42A0-9D2F-0495142A3FC3_1_105_c.jpeg" alt="Portrait of Mersad Abbasi" width="886" height="886">
+  <p>I work on <a href="https://thoughtfullab.com">ThoughtfulLab</a>. I grew up in Iran and did biology Olympiads. I am optimistic about the future of discovery and exponential growth available for small groups of ambitious people.</p>
+</div>
 
 <p>
 <a href="writings.html">writings</a><br>
